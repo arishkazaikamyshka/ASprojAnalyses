@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Описание
         Intent i = new Intent(this, SecondActivity.class);
         nextButton = findViewById(R.id.startNewActivityButton);
         nextButton.setOnClickListener(view ->{
