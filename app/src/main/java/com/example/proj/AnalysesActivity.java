@@ -23,7 +23,12 @@ public class AnalysesActivity extends AppCompatActivity {
     int bu;
     double[] mi;
     double[] ma;
-    String[] na;
+    String[] na, EdIzm;
+    DataBasesHelp sqlHelper;
+    SQLiteDatabase db;
+    EditText[] et;
+    TextView[] tw, tv;
+    Cursor cur;
 
 
     @Override
@@ -31,6 +36,7 @@ public class AnalysesActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analyses_main);
+        sqlHelper = new DataBasesHelp(getApplicationContext());
         TextView tv0 = findViewById(R.id.ht0);
         TextView tv1 = findViewById(R.id.ht1);
         TextView tv2 = findViewById(R.id.ht2);
@@ -71,19 +77,21 @@ public class AnalysesActivity extends AppCompatActivity {
         EditText et11 = findViewById(R.id.et11);
         EditText et12 = findViewById(R.id.et12);
 
-        EditText[] et = {et0, et1, et2, et3, et4, et5, et6, et7, et8, et9, et10, et11, et12};
-        TextView[] tw = {tw0, tw1, tw2, tw3, tw4, tw5, tw6, tw7, tw8, tw9, tw10, tw11, tw12};
-        TextView[] tv = {tv0, tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv10, tv11, tv12};
-        String[] un = {"Белок", "Сахар", "Кетоновые тела", "Пигментные тела", "Общий азот мочи", "Мочевина", "Аммиак", "Мочевая кислота", "Креатинин", "Относительная плотность", "Лейкоциты", "Глюкоза", "Эпителий"};
-        double[] mmi1 = {0, 0, 0, 0, 400, 20, 0.6, 0.27, 12, 1.012, 0, 0, 0};
-        double[] mma1 = {0.1, 0.05, 50, 6, 1200, 35, 1.3, 0.8, 12, 1.025, 3, 1, 5};
-        double[] wmi1 = {0, 0, 0, 0, 400, 20, 0.6, 0.27, 0.5, 1.012, 0, 0, 0};
-        double[] wma1 = {0.1, 0.05, 50, 6, 1200, 35, 1.3, 0.8, 1.6, 1.025, 3, 1, 5};
-        String[] bn = {"Гемоглобин", "Эритроциты", "Цветовой показатель", "Рецикулоциты", "Тромбоциты", "СОЭ", "Лейкоциты", "Палочкоядерные", "Сегментоядерные", "Эозинофилы", "Базофилы", "Лимфоциты", "Моноциты"};
-        double[] mmi0 = {130, 4, 0.85, 0.2, 180, 2, 4, 1, 47, 0, 0, 18, 2};
-        double[] mma0 = {160, 5.1, 1.15, 1.2, 320, 15, 9, 6, 72, 5, 1, 40, 9};
-        double[] wmi0 = {120, 3.7, 0.85, 0.2, 180, 1, 4, 1, 47, 0, 0, 18, 2};
-        double[] wma0 = {140, 4.7, 1.15, 1.2, 320, 10, 9, 6, 72, 5, 1, 40, 9};
+        et = new EditText[] {et0, et1, et2, et3, et4, et5, et6, et7, et8, et9, et10, et11, et12};
+        tw = new TextView[] {tw0, tw1, tw2, tw3, tw4, tw5, tw6, tw7, tw8, tw9, tw10, tw11, tw12};
+        tv = new TextView[] {tv0, tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv10, tv11, tv12};
+        String[] un = Names(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_NAME1);
+        String[] EdIzm1 = Names(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_EdIzm1);
+        double[] mmi1 = Elem(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_ManMin1);
+        double[] mma1 = Elem(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_ManMax1);
+        double[] wmi1 = Elem(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_WomanMin1);
+        double[] wma1 = Elem(DataBasesHelp.TABLE1, DataBasesHelp.COLUMN_WomanMax1)
+        String[] bn = Names(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_NAME0);
+        String[] EdIzm0 = Names(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_EdIzm0);
+        double[] mmi0 = Elem(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_ManMin0);
+        double[] mma0 = Elem(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_ManMax0);
+        double[] wmi0 = Elem(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_WomanMin0);
+        double[] wma0 = Elem(DataBasesHelp.TABLE0, DataBasesHelp.COLUMN_WomanMax0);
         double[] res = new double[13];
 
         Bundle extras = getIntent().getExtras();
@@ -99,6 +107,7 @@ public class AnalysesActivity extends AppCompatActivity {
         });
         if (bu == 0) {
             na = bn;
+            EdIzm = EdIzm0;
             if (n == 2){
                 mi = mmi0;
                 ma = mma0;
@@ -110,6 +119,7 @@ public class AnalysesActivity extends AppCompatActivity {
         }
         else {
             na = un;
+            EdIzm = EdIzm1;
             if (n == 2){
                 mi = mmi1;
                 ma = mma1;
@@ -120,7 +130,10 @@ public class AnalysesActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < 13; i++) {
-            tv[i].setText("  " + na[i]);
+            tv[i].setText(" " + na[i]);
+        }
+        for (int i = 0; i < 13; i++) {
+            tw[i].setText(" " + EdIzm[i]);
         }
         btn = findViewById(R.id.btnAnalyz);
         btn.setOnClickListener(view ->{
@@ -141,5 +154,39 @@ public class AnalysesActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public String[] Names(String TableName, String ColumnName){
+        String[] na = new String[13];
+        db = sqlHelper.getReadableDatabase();
+        cur = db.rawQuery("select " + ColumnName + " from " + TableName, null);
+        int j = 0;
+        int i;
+        String item;
+        while (cur.moveToNext()){
+            i = cur.getColumnIndex(ColumnName);
+            item = cur.getString(i);
+            na[j] = item;
+            j++;
+        }
+        db.close();
+        cur.close();
+        return na;
+    }
+    public double[] Elem(String TableName, String ColumnName){
+        double[] na = new double[13];
+        db = sqlHelper.getReadableDatabase();
+        cur = db.rawQuery("select " + ColumnName + " from " + TableName, null);
+        int j = 0;
+        int i;
+        double item;
+        while (cur.moveToNext()){
+            i = cur.getColumnIndex(ColumnName);
+            item = cur.getDouble(i);
+            na[j] = item;
+            j++;
+        }
+        db.close();
+        cur.close();
+        return na;
     }
 }

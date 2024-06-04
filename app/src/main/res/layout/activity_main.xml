@@ -22,7 +22,7 @@
         android:id="@+id/textView"
         android:layout_width="299dp"
         android:layout_height="106dp"
-        android:text="Это приложение поможет вам расшифровать ваши анализы и больше узнать о своём здоровье"
+        android:text="Это приложение поможет вам расшифровать ваши анализы. *Заключение не является диагнозом, для разъяснения обратитесь к специалисту."
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
